@@ -1,17 +1,19 @@
 FROM centos:latest
 MAINTAINER Paul Braham
 RUN yum update -y && \
-yum install git -y && \
-mkdir /opt/sabnzbd && \
-git clone https://github.com/sabnzbd/sabnzbd.git /opt/sabnzbd/ --depth 1 && \
+yum install git libxml2 libxml2-devel libxml2-python libxslt libxslt-devel -y && \
+mkdir /opt/couchpotato && \
+git clone https://github.com/CouchPotato/CouchPotatoServer.git /opt/couchpotato && \
+ln -s /opt/config /root/.couchpotato && \
 yum install epel-release -y && \
-
-
+yum install python-pip gcc gcc-c++ python-devel openssl-devel -y && \
 pip install --upgrade pip && \
+pip install lxml pyopenssl
 
-EXPOSE 8080
+
+EXPOSE 5050
 
 VOLUME ["/opt/config","/opt/downloads"]
 
-ENTRYPOINT python /opt/sabnzbd/SABnzbd.py -b 0 -f /opt/config -s 0.0.0.0:8080
+ENTRYPOINT python /opt/couchpotato/CouchPotato.py
 
